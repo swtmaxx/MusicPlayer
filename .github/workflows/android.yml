@@ -19,11 +19,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: List Android SDK
-        run: echo ANDROID_HOME=$ANDROID_HOME && ls $ANDROID_HOME
-
-      - name: Accept Android licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      - name: Setup Gradle 8.2
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.2
+          cache-disabled: true
 
       - name: Build Debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
