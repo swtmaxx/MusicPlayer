@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
@@ -33,8 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.musicplayer.ui.components.AlbumArtwork
 
+/**
+ * 迷你播放栏 - 固定在底部导航上方
+ */
 @Composable
-fun MiniPlayerBar(onExpand: () -> Unit, viewModel: PlayerViewModel = hiltViewModel()) {
+fun MiniPlayerBar(
+    onExpand: () -> Unit,
+    viewModel: PlayerViewModel = hiltViewModel()
+) {
     val currentSong by viewModel.currentSong.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val currentPosition by viewModel.currentPosition.collectAsState()
@@ -46,32 +51,71 @@ fun MiniPlayerBar(onExpand: () -> Unit, viewModel: PlayerViewModel = hiltViewMod
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth().clickable(onClick = onExpand),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onExpand),
             color = MaterialTheme.colorScheme.surfaceVariant,
             tonalElevation = 4.dp
         ) {
             Column {
-                val progress = if (duration > 0) currentPosition.toFloat() / duration.toFloat() else 0f
+                // 进度条
+                val progress = if (duration > 0) {
+                    currentPosition.toFloat() / duration.toFloat()
+                } else 0f
                 LinearProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.fillMaxWidth().height(2.dp),
-                    color = MaterialTheme.colorScheme.primary
+                    progress = progress,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
+
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AlbumArtwork(song = currentSong, size = 44.dp, cornerRadius = 6.dp)
+                    AlbumArtwork(
+                        song = currentSong,
+                        size = 44.dp,
+                        cornerRadius = 6.dp
+                    )
+
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(currentSong?.title ?: "", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(currentSong?.artist ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = currentSong?.title ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = currentSong?.artist ?: "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
+
                     IconButton(onClick = { viewModel.togglePlayPause() }) {
-                        Icon(if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow, contentDescription = null)
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = if (isPlaying) "暂停" else "播放"
+                        )
                     }
+
                     IconButton(onClick = { viewModel.playNext() }) {
-                        Icon(Icons.Default.SkipNext, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.SkipNext,
+                            contentDescription = "下一首"
+                        )
                     }
                 }
             }

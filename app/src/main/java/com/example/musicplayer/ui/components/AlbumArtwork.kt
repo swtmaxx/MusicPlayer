@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.musicplayer.data.model.Song
 
+/**
+ * 专辑封面组件
+ */
 @Composable
 fun AlbumArtwork(
     song: Song?,
@@ -27,15 +30,32 @@ fun AlbumArtwork(
     cornerRadius: Dp = 8.dp
 ) {
     Surface(
-        modifier = modifier.size(size).clip(RoundedCornerShape(cornerRadius)),
+        modifier = modifier
+            .size(size)
+            .clip(RoundedCornerShape(cornerRadius)),
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         if (song != null && song.albumId > 0) {
-            val artworkUri = Uri.parse("content://media/external/audio/albumart/${song.albumId}")
-            AsyncImage(model = artworkUri, contentDescription = "专辑封面", contentScale = ContentScale.Crop, modifier = Modifier.size(size))
+            val artworkUri = Uri.parse(
+                "content://media/external/audio/albumart/${song.albumId}"
+            )
+            AsyncImage(
+                model = artworkUri,
+                contentDescription = "专辑封面",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(size)
+            )
         } else {
-            Box(modifier = Modifier.size(size), contentAlignment = Alignment.Center) {
-                Icon(imageVector = Icons.Default.MusicNote, contentDescription = null, modifier = Modifier.size(size * 0.5f), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MusicNote,
+                    contentDescription = null,
+                    modifier = Modifier.size(size * 0.5f),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                )
             }
         }
     }
