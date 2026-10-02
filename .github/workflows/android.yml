@@ -19,16 +19,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: List Android SDK
+        run: echo ANDROID_HOME=$ANDROID_HOME && ls $ANDROID_HOME
 
       - name: Accept Android licenses
-        run: yes | sdkmanager --licenses || true
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Build Debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
-        env:
-          ANDROID_HOME: /usr/local/lib/android
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
